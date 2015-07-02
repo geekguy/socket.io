@@ -4,6 +4,10 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('../..')(server);
 var port = process.env.PORT || 8080;
+var hbEventList = ['occurred', 'assigned']
+var mp3Hash = {
+	1: 'pay-attention'
+}
 
 // some code to make sure we can read aws json :/.
 app.use(function(req, res, next) {
@@ -29,9 +33,17 @@ server.listen(port, function () {
 
 app.use(express.bodyParser());
 
+
 app.post('/hb-webhook', function(req, res) {
-  io.sockets.emit('new_notification', req.body);
-  return res.send("OKAY");
+	console.log(req.body);
+	if(hbEventList.indexOf(req.body.event) != -1) {
+	  var data = {
+	  	message: req.body.message,
+	  	mp3_slug: mp3Hash[1]
+	  }
+	  io.sockets.emit('new_notification', data);	
+	}
+    return res.send("OKAY");
 });
 
 app.get('/pingdom-webhook', function(req, res) {
