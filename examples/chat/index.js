@@ -13,6 +13,12 @@ server.listen(port, function () {
 
 app.use(express.bodyParser());
 
+app.post('/', function(req, res) {
+    console.log(req.body);
+    io.sockets.emit('new_notification', req.body);
+    return res.send("OKAY");
+});
+
 app.post('/hb-webhook', function(req, res) {
     console.log(req.body);
     io.sockets.emit('new_notification', req.body);
