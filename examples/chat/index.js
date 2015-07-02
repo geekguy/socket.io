@@ -19,7 +19,7 @@ app.post('/hb-webhook', function(req, res) {
     return res.send("OKAY");
 });
 
-app.post('/pingdom-webhook', function(req, res) {
+app.get('/pingdom-webhook', function(req, res) {
     console.log(req.body);
     io.sockets.emit('new_notification', req.body);
     return res.send("OKAY");
