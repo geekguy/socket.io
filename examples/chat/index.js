@@ -5,6 +5,7 @@ var server = require('http').createServer(app);
 var io = require('../..')(server);
 var port = process.env.PORT || 8080;
 
+// some code to make sure we can read aws json :/.
 app.use(function(req, res, next) {
   req.rawBody = '';
   req.setEncoding('utf8');
@@ -19,7 +20,6 @@ app.use(function(req, res, next) {
 });
 app.use(express.bodyParser());
 
-// app.use(express.bodyParser());
 app.use(express.logger());
 
 
@@ -29,22 +29,19 @@ server.listen(port, function () {
 
 app.use(express.bodyParser());
 
-app.post('/', function(req, res) {
-    console.log('hi');
-    console.log(req.body);
-    return res.send("OKAY");
-});
-
 app.post('/hb-webhook', function(req, res) {
-    console.log('hi 2');
-    io.sockets.emit('new_notification', req.body);
-    return res.send("OKAY");
+  io.sockets.emit('new_notification', req.body);
+  return res.send("OKAY");
 });
 
 app.get('/pingdom-webhook', function(req, res) {
-    console.log(req.body);
-    io.sockets.emit('new_notification', req.body);
-    return res.send("OKAY");
+  io.sockets.emit('new_notification', req.body);
+  return res.send("OKAY");
+});
+
+app.post('/aws-webhook', function(req, res) {
+  io.sockets.emit('new_notification', req.body);
+  return res.send("OKAY");
 });
 
 app.use(express.static(__dirname + '/public'));
