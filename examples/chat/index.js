@@ -13,17 +13,16 @@ server.listen(port, function () {
 
 app.use(express.bodyParser());
 
-function broadcast_message(message){
-  console.log(req.body);
-  io.sockets.emit('new_notification', req.body);
-  return res.send("OKAY");
-}
 app.post('/hb-webhook', function(req, res) {
-    broadcast_message(message);
+    console.log(req.body);
+    io.sockets.emit('new_notification', req.body);
+    return res.send("OKAY");
 });
 
 app.post('/pingdom-webhook', function(req, res) {
-    broadcast_message(message);
+    console.log(req.body);
+    io.sockets.emit('new_notification', req.body);
+    return res.send("OKAY");
 });
 
 app.use(express.static(__dirname + '/public'));
