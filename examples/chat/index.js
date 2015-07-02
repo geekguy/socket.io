@@ -9,6 +9,10 @@ var mp3Hash = {
 	1: 'pay-attention'
 }
 
+var aws_arn_mapping = {
+  'arn:aws:sns:us-west-2:283994472123:Test3': "WebHook Server CPU is High. Please check."
+}
+
 // some code to make sure we can read aws json :/.
 app.use(function(req, res, next) {
   var contentType = req.headers['content-type'] || ''
@@ -28,6 +32,15 @@ app.use(function(req, res, next) {
     next();
   });
 });
+
+function IsJsonString(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
 
 app.use(express.bodyParser());
 
@@ -59,8 +72,18 @@ app.get('/pingdom-webhook', function(req, res) {
 });
 
 app.post('/aws-webhook', function(req, res) {
-  io.sockets.emit('new_notification', req.body);
-  return res.send("OKAY");
+  // console.log(req)
+  console.log(req.rawBody);
+  console.log(JSON.parse(req.rawBody));
+  if(IsJsonString(req.rawBody)) {
+    console.log('its json')
+    jsonBody = JSON.parse(req.rawBody)
+    if (jsonBody.TopicArn && aws_arn_mapping[jsonBody.TopicArn]){
+      io.sockets.emit('new_notification', {message: aws_arn_mapping[jsonBody.TopicArn], mp3_slug: ''});
+      return res.send("OKAY");
+    }
+  }
+  return res.send("NOT OKAY");
 });
 
 app.post('/git-webhook', function(req, res){
