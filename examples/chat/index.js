@@ -6,7 +6,7 @@ var io = require('../..')(server);
 var port = process.env.PORT || 8080;
 
 // app.use(express.bodyParser());
-
+app.use(express.logger());
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
