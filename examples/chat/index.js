@@ -20,6 +20,7 @@ app.post('/', function(req, res) {
 });
 
 app.post('/hb-webhook', function(req, res) {
+    console.log('hi 2');
     console.log(req.body);
     io.sockets.emit('new_notification', req.body);
     return res.send("OKAY");
