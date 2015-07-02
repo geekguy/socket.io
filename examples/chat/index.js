@@ -10,18 +10,18 @@ var mp3Hash = {
 }
 
 // some code to make sure we can read aws json :/.
-app.use(function(req, res, next) {
-  req.rawBody = '';
-  req.setEncoding('utf8');
+// app.use(function(req, res, next) {
+//   req.rawBody = '';
+//   req.setEncoding('utf8');
 
-  req.on('data', function(chunk) {
-    req.rawBody += chunk;
-  });
+//   req.on('data', function(chunk) {
+//     req.rawBody += chunk;
+//   });
 
-  req.on('end', function() {
-    next();
-  });
-});
+//   req.on('end', function() {
+//     next();
+//   });
+// });
 app.use(express.bodyParser());
 
 app.use(express.logger());
@@ -41,7 +41,7 @@ app.post('/hb-webhook', function(req, res) {
 	  	message: req.body.message,
 	  	mp3_slug: mp3Hash[1]
 	  }
-	  io.sockets.emit('new_notification', data);	
+	  io.sockets.emit('new_notification', data);
 	}
     return res.send("OKAY");
 });
