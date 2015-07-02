@@ -15,10 +15,8 @@ app.use(express.bodyParser());
 
 app.post('/hb-webhook', function(req, res) {
     console.log(req.body);
-   if(connection){
-    io.sockets.emit('new message', req.body);
-  }
-  return res.send("OKAY");
+    io.sockets.emit('new_notification', req.body);
+    return res.send("OKAY");
 });
 
 app.use(express.static(__dirname + '/public'));
