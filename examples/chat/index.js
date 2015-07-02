@@ -63,4 +63,14 @@ app.post('/aws-webhook', function(req, res) {
   return res.send("OKAY");
 });
 
+app.post('/git-webhook', function(req, res){
+	console.log(req.body);
+	var data = {
+	  	message: req.body.message,
+	  	mp3_slug: ''
+	  }
+	io.sockets.emit('new_notification', data);
+	return res.send("Okay");
+});
+
 app.use(express.static(__dirname + '/public'));
