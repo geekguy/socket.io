@@ -14,8 +14,8 @@ server.listen(port, function () {
 app.use(express.bodyParser());
 
 app.post('/', function(req, res) {
+    console.log('hi');
     console.log(req.body);
-    io.sockets.emit('new_notification', req.body);
     return res.send("OKAY");
 });
 
