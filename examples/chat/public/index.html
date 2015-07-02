@@ -4,6 +4,6 @@
     var socket = io();
     socket.on('new_notification', function (data) {
     console.log(data);
-    responsiveVoice.speak(data.data);
+    responsiveVoice.speak(data.message);
    });
 </script>
