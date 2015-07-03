@@ -100,6 +100,7 @@ app.post('/git-webhook', function(req, res){
 	  				mp3_slug: ''
 	  			}
 				io.sockets.emit('new_notification', data);
+				break;
 			}
 		}
 	}
