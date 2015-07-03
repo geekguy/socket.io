@@ -1,45 +1,95 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="//code.responsivevoice.org/responsivevoice.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.js"></script>
-<script>
-    var socket = io();
-    var notificationQueue = [];
-    var speaking = false;
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//code.responsivevoice.org/responsivevoice.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.js"></script>
+    <script>
+        var socket = io();
+        var notificationQueue = [];
+        var speaking = false;
 
-    socket.on('new_notification', function (data) {
-      console.log(data);
-      notificationQueue.push(data);        
-    });
-    
-    var intervalID = setInterval(function(){
-    	if(!speaking && notificationQueue.length > 0) {		
-    	  speakOut(notificationQueue[0])	
-    	}    	
-    }, 1000);
-
-    speakEnd = function(){
-      speaking = false;
-      notificationQueue.shift()
-    }
-
-    var speakOut = function(data) {
-      speaking = true
-      console.log('speakout: ');
-      console.log(data);
-      if(data.mp3_slug !== '') {
-        $('#'+data.mp3_slug)[0].play()	
-        $('#'+data.mp3_slug).bind("ended", function(){
-          responsiveVoice.speak(data.message, "UK English Female", {onend: speakEnd});    
+        socket.on('new_notification', function (data) {
+          console.log(data);
+          notificationQueue.push(data);
         });
-      } else {
-        responsiveVoice.speak(data.message, "UK English Female", {onend: speakEnd});
-      }
-    }
 
-</script>
-<body>
-	<audio id="pay-attention" style="display:none" controls>
+        var intervalID = setInterval(function(){
+        	if(!speaking && notificationQueue.length > 0) {
+        	  speakOut(notificationQueue[0])
+        	}
+        }, 1000);
+
+        speakEnd = function(){
+          speaking = false;
+          notificationQueue.shift()
+        }
+
+        var speakOut = function(data) {
+          speaking = true
+          console.log('speakout: ');
+          console.log(data);
+          blink()
+          if(data.mp3_slug !== '') {
+            $('#'+data.mp3_slug)[0].play()
+            $('#'+data.mp3_slug).bind("ended", function(){
+              responsiveVoice.speak(data.message, "UK English Female", {onend: speakEnd});
+            });
+          } else {
+            $('#error-message').html(data.message);
+            responsiveVoice.speak(data.message, "UK English Female", {onend: speakEnd});
+          }
+        }
+
+        function blink() {
+          var on = 1;
+          var led = document.getElementById("led");
+          // inter_val = window.setInterval(function () { on = 1 - on; led.className = on ? "on" : "off"; }, 1000);
+          interval = setInterval(function(){
+            $("body").toggleClass("red-light");
+          },100)
+          setTimeout(function(){
+            if(interval){
+              $("body").removeClass("red-light");
+              clearInterval(interval);
+            }
+          }, 10000)
+        }
+    </script>
+    <style>
+      h1   { text-align: center }
+      .on  { color: green }
+      .off { color: red }
+
+      .center-screen{
+          position: fixed;
+          top: 30%;
+          width: 100%;
+      }
+
+      div #error-message{
+        font-size: 70px;
+        text-align: center
+      }
+
+      .red-light{
+        width: 100%;
+        width: 100%;
+        color: red;
+        background-color: red;
+      }
+
+      .hide {
+        visibility: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <audio id="pay-attention" style="display:none" controls>
       <source src="PayAttention.wav" type="audio/wav">
       Your browser does not support the audio element.
     </audio>
-</body>
+      <div class='center-screen'>
+          <h1 id='error-message'>All is well here. </h1>
+      </div>
+  </body>
+</html>
