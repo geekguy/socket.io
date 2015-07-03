@@ -45,7 +45,7 @@ function IsJsonString(str) {
   return true;
 }
 function getAssigneeName(str){
-  console.log("EHEGEASDSD")
+  console.log("insite getAssigneeName")
   console.log(str.split("@hackerrank.com")[0])
   return str.split("@hackerrank.com")[0]
 }
@@ -73,6 +73,9 @@ app.post('/hb-webhook', function(req, res) {
       data['mp3_slug'] = ''
       if(req.body.actor && req.body.actor.name){
         data['assignee'] = req.body.actor.name;
+      }
+      else if(req.body.actor && req.body.actor.email){
+        data['assignee'] = req.body.getAssigneeName(req.body.actor.email);
       }
     }
     console.log(data)
