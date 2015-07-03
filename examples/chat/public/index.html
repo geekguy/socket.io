@@ -29,13 +29,13 @@
           console.log('speakout: ');
           console.log(data);
           blink()
+          $('#error-message').html(data.message);
           if(data.mp3_slug !== '') {
             $('#'+data.mp3_slug)[0].play()
             $('#'+data.mp3_slug).bind("ended", function(){
               responsiveVoice.speak(data.message, "UK English Female", {onend: speakEnd});
             });
           } else {
-            $('#error-message').html(data.message);
             responsiveVoice.speak(data.message, "UK English Female", {onend: speakEnd});
           }
         }
