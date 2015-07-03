@@ -96,7 +96,7 @@ app.post('/git-webhook', function(req, res){
 			if(res.req.body.issue.labels[i].name == "P0" || res.req.body.issue.labels[i].name == "Critical"){
 				var msg = "New issue Assigned to " + res.req.body.issue.assignee.login + " of " + res.req.body.issue.labels[i].name + " label";
 				var data = {
-	  				message: req.body.msg,
+	  				message: msg,
 	  				mp3_slug: ''
 	  			}
 				io.sockets.emit('new_notification', data);
