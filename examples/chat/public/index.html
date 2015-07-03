@@ -68,7 +68,9 @@
 
     var speakEnd = function(){
       speaking = false;
-      notificationQueue.shift();
+      if(notificationQueue.length != 0) {
+        notificationQueue.shift();
+      }
     }
 
 
