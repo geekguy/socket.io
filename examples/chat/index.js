@@ -4,6 +4,8 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('../..')(server);
 var port = process.env.PORT || 8080;
+var redis = require("redis");
+var redisClient = redis.createClient();
 var hbEventList = ['occurred', 'assigned']
 var mp3Hash = {
 	1: 'pay-attention'
@@ -106,5 +108,20 @@ app.post('/git-webhook', function(req, res){
 	}
 	return res.send("Okay");
 });
+
+app.get('/hb-leaderboard', function(req, res) {
+	redisClient.zrange('user-faults', 0, -1, 'withscores', function(err, reply){
+	  if(reply.length == 0) return; 
+	  io.sockets.emit('hb_leaderboard', {result: reply});
+	});
+	return res.send("OKAY");
+});
+
+setInterval(function(){ 
+  redisClient.zrange('user-faults', 0, -1, 'withscores', function(err, reply){
+    if(reply.length == 0) return 
+    io.sockets.emit('hb_leaderboard', {result: reply});
+  }); 
+}, 1800000);
 
 app.use(express.static(__dirname + '/public'));
