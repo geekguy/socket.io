@@ -71,7 +71,7 @@ app.post('/hb-webhook', function(req, res) {
     if(req.body.event == 'resolved'){
       data['message'] = "hb error resolved"
       data['mp3_slug'] = ''
-      if(req.body.assignee){
+      if(req.body.actor && req.body.actor.name){
         data['assignee'] = req.body.actor.name;
       }
     }
