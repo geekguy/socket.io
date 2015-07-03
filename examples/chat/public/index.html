@@ -10,15 +10,13 @@
 
     socket.on('new_notification', function (data) {
       console.log(data);
-      notificationQueue.push(data);        
+      notificationQueue.push(data);
     });
 
     socket.on('hb_leaderboard', function (data) {
       console.log(data);
     });
     $.get('/hb-leaderboard');
-    
-    
 
     var intervalID = setInterval(function(){
     	if(!speaking && notificationQueue.length > 0) {
@@ -26,21 +24,47 @@
     	}
     }, 1000);
 
-        function blink() {
-          var on = 1;
-          var led = document.getElementById("led");
-          // inter_val = window.setInterval(function () { on = 1 - on; led.className = on ? "on" : "off"; }, 1000);
-          interval = setInterval(function(){
-            $("body").toggleClass("red-light");
-          },100)
-          setTimeout(function(){
-            if(interval){
-              $('#error-message').html('All is well here.');
-              $("body").removeClass("red-light");
-              clearInterval(interval);
-            }
-          }, 10000)
+    var speakOut = function(data) {
+      speaking = true
+      console.log('speakout: ');
+      console.log(data);
+
+      if(data.message == 'hb error resolved'){
+        $('body').css('background-image', 'url(http://i.redsnapperverytasty.com/graphics/wp-content/uploads/2012/08/bill-murray-youre-awesome-500x648.jpg)');
+
+        if(data.assignee){
+          sound_message = "Hey " + data.assignee + "You are awesome."
+          responsiveVoice.speak(sound_message, "UK English Female", {onend: speakEnd});
         }
+      } else {
+        blink()
+        $('#error-message').html(data.message);
+        if(data.mp3_slug !== '') {
+          $('#'+data.mp3_slug)[0].play()
+          $('#'+data.mp3_slug).bind("ended", function(){
+            responsiveVoice.speak(data.message, "UK English Female", {onend: speakEnd});
+          });
+        } else {
+          responsiveVoice.speak(data.message, "UK English Female", {onend: speakEnd});
+        }
+      }
+    }
+
+    function blink() {
+      var on = 1;
+      var led = document.getElementById("led");
+      // inter_val = window.setInterval(function () { on = 1 - on; led.className = on ? "on" : "off"; }, 1000);
+      interval = setInterval(function(){
+        $("body").toggleClass("red-light");
+      },100)
+      setTimeout(function(){
+        if(interval){
+          $('#error-message').html('All is well here.');
+          $("body").removeClass("red-light");
+          clearInterval(interval);
+        }
+      }, 10000)
+    }
 
     var speakEnd = function(){
       speaking = false;
@@ -65,11 +89,11 @@
     }
 
 
-   
+
    </script>
-    
+
 <style>
- 
+
   .center-screen{
       position: fixed;
       top: 30%;

@@ -6,7 +6,7 @@ var io = require('../..')(server);
 var port = process.env.PORT || 8080;
 var redis = require("redis");
 var redisClient = redis.createClient();
-var hbEventList = ['occurred', 'assigned']
+var hbEventList = ['occurred', 'assigned', 'resolved']
 var mp3Hash = {
 	1: 'slimshady',
 	2: 'siren'
@@ -44,7 +44,11 @@ function IsJsonString(str) {
   }
   return true;
 }
-
+function getAssigneeName(str){
+  console.log("EHEGEASDSD")
+  console.log(str.split("@hackerrank.com")[0])
+  return str.split("@hackerrank.com")[0]
+}
 app.use(express.bodyParser());
 
 app.use(express.logger());
@@ -60,10 +64,18 @@ app.use(express.bodyParser());
 app.post('/hb-webhook', function(req, res) {
 	console.log(req.body);
 	if(hbEventList.indexOf(req.body.event) != -1) {
-	  var data = {
-	  	message: req.body.message,
-	  	mp3_slug: mp3Hash[1]
-	  }
+    var data = {
+      message: req.body.message,
+      mp3_slug: mp3Hash[1]
+    }
+    if(req.body.event == 'resolved'){
+      data['message'] = "hb error resolved"
+      data['mp3_slug'] = ''
+      if(req.body.assignee){
+        data['assignee'] = getAssigneeName(req.body.assignee);
+      }
+    }
+    console.log(data)
 	  io.sockets.emit('new_notification', data);
 	}
     return res.send("OKAY");
@@ -73,7 +85,7 @@ app.get('/pingdom-webhook', function(req, res) {
   var data = {
 	message: req.get('description'),
 	mp3_slug: mp3Hash[2]
-  }	
+  }
   io.sockets.emit('new_notification', data);
   return res.send("OKAY");
 });
@@ -116,17 +128,17 @@ app.post('/git-webhook', function(req, res){
 
 app.get('/hb-leaderboard', function(req, res) {
 	redisClient.zrange('user-faults', 0, -1, 'withscores', function(err, reply){
-	  if(reply.length == 0) return; 
+	  if(reply.length == 0) return;
 	  io.sockets.emit('hb_leaderboard', {result: reply});
 	});
 	return res.send("OKAY");
 });
 
-setInterval(function(){ 
+setInterval(function(){
   redisClient.zrange('user-faults', 0, -1, 'withscores', function(err, reply){
-    if(reply.length == 0) return 
+    if(reply.length == 0) return
     io.sockets.emit('hb_leaderboard', {result: reply});
-  }); 
+  });
 }, 1800000);
 
 app.use(express.static(__dirname + '/public'));
