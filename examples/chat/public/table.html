@@ -1,0 +1,13 @@
+
+<table align="center" style="border:1px solid black;border-collapse:collapse;" width="30%" cellpadding="10">
+   <thead>
+   	<td></td>
+   	<td>HB Count</td>
+   </thead>
+   <%for(var i= result.length-3; i>=2; i-=2) {%>
+	<tr>
+		<td><%= result[i-1]%></td>
+		<td><%= result[i]%></td>
+	</tr>
+	<%}%>
+</table>
