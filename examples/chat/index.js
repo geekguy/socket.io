@@ -142,6 +142,6 @@ setInterval(function(){
     if(reply.length == 0) return
     io.sockets.emit('hb_leaderboard', {result: reply});
   });
-}, 1800000);
+}, 10000);
 
 app.use(express.static(__dirname + '/public'));
