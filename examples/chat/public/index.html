@@ -64,11 +64,13 @@
     }
 
     var speakEnd = function(){
+      console.log('inside speakend')
       speaking = false;
       if(notificationQueue.length != 0) {
         notificationQueue.shift();
       }
       setTimeout(function(){
+        console.log('inside timeout')
         $('#error-message').html('All is well here.');
         $('#hb-leaderboard').show();
         $("body").removeClass("red-light");
@@ -78,7 +80,7 @@
         }
       }, 3000)
     }
-    
+
     $.get('/table.html', function(data){
     	tableTemplate = _.template(data);
     	if (hbLeaderboard != null) {
@@ -136,7 +138,7 @@
       <source src="nahopayega.mp3" type="audio/mp3">
       Your browser does not support the audio element.
     </audio>
-    
+
       <div class='center-screen'>
           <h1 id='error-message'>All is well here.</h1>
           <div id="hb-leaderboard"></div>

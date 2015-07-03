@@ -85,8 +85,12 @@ app.post('/hb-webhook', function(req, res) {
 });
 
 app.get('/pingdom-webhook', function(req, res) {
+  message = "Hey Website is down."
+  if(req.get('description')){
+    message = req.get('description')
+  }
   var data = {
-	message: req.get('description'),
+	message: message,
 	mp3_slug: mp3Hash[2]
   }
   io.sockets.emit('new_notification', data);
