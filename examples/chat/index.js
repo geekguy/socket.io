@@ -91,10 +91,10 @@ app.post('/aws-webhook', function(req, res) {
 });
 
 app.post('/git-webhook', function(req, res){
-	if ((res.req.body.action=="opened" || res.req.body.action=="labeled" || res.req.body.action=="unlabeled" ) && req.issue.assignee!=null){
-		for (var i=0; i < req.issue.labels.length; i++){
-			if(req.issue.labels.name == "P0" || req.issue.labels.name == "Critical"){
-				var msg = "New issue Assigned to" + req.issue.assignee + "of " + req.issue.labels.name + "name"
+	if ((res.req.body.action=="opened" || res.req.body.action=="labeled" || res.req.body.action=="unlabeled" ) && res.req.body.issue.assignee!=null){
+		for (var i=0; i < res.req.body.issue.labels.length; i++){
+			if(res.req.body.issue.labels.name == "P0" || res.req.body.issue.labels.name == "Critical"){
+				var msg = "New issue Assigned to" + res.req.body.issue.assignee + "of " + res.req.body.issue.labels.name + "name"
 				io.sockets.emit('new_notification', msg);
 			}
 		}
