@@ -10,7 +10,7 @@ var mp3Hash = {
 }
 
 var aws_arn_mapping = {
-  'arn:aws:sns:us-west-2:283994472123:Test3': "WebHook Server CPU is High. Please check."
+  'arn:aws:sns:us-west-2:283994472123:HRWebHook': "WebHook Server CPU is High. Please check."
 }
 
 // some code to make sure we can read aws json :/.
@@ -78,8 +78,12 @@ app.post('/aws-webhook', function(req, res) {
   if(IsJsonString(req.rawBody)) {
     console.log('its json')
     jsonBody = JSON.parse(req.rawBody)
-    if (jsonBody.TopicArn && aws_arn_mapping[jsonBody.TopicArn]){
-      io.sockets.emit('new_notification', {message: aws_arn_mapping[jsonBody.TopicArn], mp3_slug: ''});
+    if (jsonBody.TopicArn){
+      message = aws_arn_mapping[jsonBody.TopicArn]
+      if (!message){
+        message = 'Something is wrong on AWS. Please Check SNS.'
+      }
+      io.sockets.emit('new_notification', {message: message, mp3_slug: ''});
       return res.send("OKAY");
     }
   }
