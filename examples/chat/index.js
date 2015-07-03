@@ -8,7 +8,8 @@ var redis = require("redis");
 var redisClient = redis.createClient();
 var hbEventList = ['occurred', 'assigned']
 var mp3Hash = {
-	1: 'pay-attention'
+	1: 'slimshady',
+	2: 'siren'
 }
 
 var aws_arn_mapping = {
@@ -69,7 +70,11 @@ app.post('/hb-webhook', function(req, res) {
 });
 
 app.get('/pingdom-webhook', function(req, res) {
-  io.sockets.emit('new_notification', req.body);
+  var data = {
+	message: req.get('description'),
+	mp3_slug: mp3Hash[2]
+  }	
+  io.sockets.emit('new_notification', data);
   return res.send("OKAY");
 });
 
