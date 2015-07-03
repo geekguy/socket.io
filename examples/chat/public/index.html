@@ -49,6 +49,7 @@
           },100)
           setTimeout(function(){
             if(interval){
+              $('#error-message').html('All is well here.');
               $("body").removeClass("red-light");
               clearInterval(interval);
             }
@@ -89,7 +90,7 @@
       Your browser does not support the audio element.
     </audio>
       <div class='center-screen'>
-          <h1 id='error-message'>All is well here. </h1>
+          <h1 id='error-message'>All is well here.</h1>
       </div>
   </body>
 </html>
