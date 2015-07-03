@@ -18,7 +18,7 @@ Honeybadger::Api.configure do |c|
 end
 
 
-every_n_seconds(1800) do
+every_n_seconds(10) do
 	ps_faults = Honeybadger::Api::Fault.all(40475)
 
 	redis.del('user-faults')
