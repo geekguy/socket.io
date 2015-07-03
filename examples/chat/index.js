@@ -91,12 +91,14 @@ app.post('/aws-webhook', function(req, res) {
 });
 
 app.post('/git-webhook', function(req, res){
-	console.log(req.body);
-	var data = {
-	  	message: req.body.message,
-	  	mp3_slug: ''
-	  }
-	io.sockets.emit('new_notification', data);
+	if ((res.req.body.action=="opened" || res.req.body.action=="labeled" || res.req.body.action=="unlabeled" ) && req.issue.assignee!=null){
+		for (var i=0; i < req.issue.labels.length; i++){
+			if(req.issue.labels.name == "P0" || req.issue.labels.name == "Critical"){
+				var msg = "New issue Assigned to" + req.issue.assignee + "of " + req.issue.labels.name + "name"
+				io.sockets.emit('new_notification', msg);
+			}
+		}
+	}
 	return res.send("Okay");
 });
 
