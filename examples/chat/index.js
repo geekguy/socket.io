@@ -75,7 +75,7 @@ app.post('/hb-webhook', function(req, res) {
         data['assignee'] = req.body.actor.name;
       }
       else if(req.body.actor && req.body.actor.email){
-        data['assignee'] = req.body.getAssigneeName(req.body.actor.email);
+        data['assignee'] = getAssigneeName(req.body.actor.email);
       }
     }
     console.log(data)
